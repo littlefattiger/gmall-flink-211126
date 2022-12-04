@@ -24,7 +24,7 @@ public class DwdTrafficUniqueVisitorDetail {
         env.setParallelism(1);
 
         String topic = "dwd_traffic_page_log";
-        String groupId = "dwd_traffic_user_jump_detail";
+        String groupId = "dwd_traffic_unique_visitor_detail";
         DataStreamSource<String> kafkaDS = env.addSource(MyKafkaUtil.getFlinkKafkaConsumer(topic, groupId));
 
         SingleOutputStreamOperator<JSONObject> jsonObjDS = kafkaDS.flatMap(new FlatMapFunction<String, JSONObject>() {
