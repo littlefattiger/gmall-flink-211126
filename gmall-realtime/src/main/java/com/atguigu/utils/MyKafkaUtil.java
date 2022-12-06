@@ -34,9 +34,9 @@ public class MyKafkaUtil {
 
                     @Override
                     public String deserialize(ConsumerRecord<byte[], byte[]> consumerRecord) throws Exception {
-                        if(consumerRecord==null || consumerRecord.value()==null){
+                        if (consumerRecord == null || consumerRecord.value() == null) {
                             return "";
-                        }else {
+                        } else {
                             return new String(consumerRecord.value());
                         }
                     }
@@ -47,17 +47,19 @@ public class MyKafkaUtil {
                     }
                 }, properties);
     }
-    public static FlinkKafkaProducer<String> getFlinkKafkaProducer(String topic){
-        return new FlinkKafkaProducer<String>(KAFKA_SERVER,topic,new SimpleStringSchema());
+
+    public static FlinkKafkaProducer<String> getFlinkKafkaProducer(String topic) {
+        return new FlinkKafkaProducer<String>(KAFKA_SERVER, topic, new SimpleStringSchema());
 
     }
-    public static FlinkKafkaProducer<String> getFlinkKafkaProducer(String topic, String defaultTopic){
+
+    public static FlinkKafkaProducer<String> getFlinkKafkaProducer(String topic, String defaultTopic) {
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        return new FlinkKafkaProducer<String>(defaultTopic,new KafkaSerializationSchema<String>(){
+        return new FlinkKafkaProducer<String>(defaultTopic, new KafkaSerializationSchema<String>() {
             @Override
             public ProducerRecord<byte[], byte[]> serialize(String s, @Nullable Long aLong) {
-                if (s==null){
+                if (s == null) {
                     new ProducerRecord<>(topic, "".getBytes());
                 }
                 return new ProducerRecord<>(topic, s.getBytes());
@@ -65,4 +67,45 @@ public class MyKafkaUtil {
         }, properties, FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
 
     }
+
+    /*
+
+     */
+    public static String getKafkaDDL(String topic, String groupId) {
+
+        return " with ('connector' = 'kafka', " +
+                " 'topic' = '" + topic + "'," +
+                " 'properties.bootstrap.servers' = '" + KAFKA_SERVER + "', " +
+                " 'properties.group.id' = '" + groupId + "', " +
+                " 'format' = 'json', " +
+                " 'scan.startup.mode' = 'group-offsets')";
+    }
+
+    public static String getTopicDb(String groupId) {
+        return "CREATE TABLE topic_db (\n" +
+                "`database` STRING,\n" +
+                "`table` STRING,\n" +
+                "`type` STRING,\n" +
+                "`data` MAP<STRING,STRING>,\n" +
+                "`old` MAP<STRING,STRING>,\n" +
+                "`pt` AS PROCTIME()\n" +
+                ") " + getKafkaDDL("topic_db", groupId);
+    }
+
+
+    /**
+     * Kafka-Sink DDL 语句
+     *
+     * @param topic 输出到 Kafka 的目标主题
+     * @return 拼接好的 Kafka-Sink DDL 语句
+     */
+    public static String getKafkaSinkDDL(String topic) {
+        return "WITH ( " +
+                "  'connector' = 'kafka', " +
+                "  'topic' = '" + topic + "', " +
+                "  'properties.bootstrap.servers' = '" + KAFKA_SERVER + "', " +
+                "  'format' = 'json' " +
+                ")";
+    }
+
 }
