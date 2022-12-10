@@ -202,7 +202,7 @@ public class DwdTradeOrderPreProcess {
                         "select * from result_table")
                 .print();
 
-        env.execute();
+        env.execute("DwdTradeOrderPreProcess");
 
     }
 }
