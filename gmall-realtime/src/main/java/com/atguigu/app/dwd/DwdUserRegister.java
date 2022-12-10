@@ -36,7 +36,7 @@ public class DwdUserRegister {
                 "`type` string,\n" +
                 "`data` map<string, string>,\n" +
                 "`ts` string\n" +
-                ")" + MyKafkaUtil.getKafkaDDL("topic_db", "dwd_trade_order_detail"));
+                ")" + MyKafkaUtil.getKafkaDDL("topic_db", "dwd_trade_order_detail_211126"));
 
         // TODO 4. 读取用户表数据
         Table userInfo = tableEnv.sqlQuery("select\n" +
