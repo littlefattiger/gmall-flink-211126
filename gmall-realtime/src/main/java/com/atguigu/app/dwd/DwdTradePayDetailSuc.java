@@ -53,9 +53,9 @@ public class DwdTradePayDetailSuc {
 //                "split_original_amount string,\n" +
                 "split_activity_amount string,\n" +
                 "split_coupon_amount string,\n" +
-                "split_total_amount string \n" +
+                "split_total_amount string, \n" +
 //                "ts string,\n" +
-//                "row_op_ts timestamp_ltz(3)\n" +
+                "row_op_ts timestamp_ltz(3)\n" +
                 ")" + MyKafkaUtil.getKafkaDDL("dwd_trade_order_detail", "pay_detail_suc_order_211126"));
         tableEnv.executeSql(MysqlUtil.getBaseDicLookUpDDL());
 
@@ -81,9 +81,9 @@ public class DwdTradePayDetailSuc {
 //                "od.split_original_amount,\n" +
                 "od.split_activity_amount,\n" +
                 "od.split_coupon_amount,\n" +
-                "od.split_total_amount split_payment_amount \n" +
+                "od.split_total_amount split_payment_amount, \n" +
 //                "pi.ts,\n" +
-//                "od.row_op_ts row_op_ts\n" +
+                "od.row_op_ts row_op_ts\n" +
                 "from payment_info pi\n" +
                 "join dwd_trade_order_detail od\n" +
                 "on pi.order_id = od.order_id\n" +
@@ -114,7 +114,7 @@ public class DwdTradePayDetailSuc {
                 "split_coupon_amount string,\n" +
                 "split_payment_amount string, \n" +
 //                "ts string,\n" +
-//                "row_op_ts timestamp_ltz(3),\n" +
+                "row_op_ts timestamp_ltz(3),\n" +
                 "primary key(order_detail_id) not enforced\n" +
                 ")" + MyKafkaUtil.getUpsertKafkaDDL("dwd_trade_pay_detail_suc"));
 

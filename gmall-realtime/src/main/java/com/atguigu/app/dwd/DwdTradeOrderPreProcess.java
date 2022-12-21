@@ -139,7 +139,8 @@ public class DwdTradeOrderPreProcess {
                 "oc.coupon_id,\n" +
                 "oc.coupon_use_id,\n" +
                 "oi.`type`,\n" +
-                "oi.`old`\n" +
+                "oi.`old` ,\n" +
+                "current_row_timestamp() row_op_ts \n" +
                 "from order_detail_table od\n" +
                 "join order_info_table oi\n" +
                 "on od.order_id=oi.id\n" +
@@ -195,6 +196,7 @@ public class DwdTradeOrderPreProcess {
                 "`coupon_use_id` string,\n" +
                 "`type` string,\n" +
                 "`old` map<string,string>,\n" +
+                "`row_op_ts` TIMESTAMP_LTZ(3),\n" +
                 "primary key(id) not enforced \n" +
                 ")" + MyKafkaUtil.getUpsertKafkaDDL("dwd_trade_order_pre_process"));
         tableEnv.executeSql("" +

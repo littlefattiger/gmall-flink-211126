@@ -53,8 +53,8 @@ public class DwdTradeOrderDetail {
                 "`coupon_id` string,\n" +
                 "`coupon_use_id` string,\n" +
                 "`type` string,\n" +
-                "`old` map<string,string> \n" +
-
+                "`old` map<string,string>, \n" +
+                "`row_op_ts` timestamp_ltz(3)\n" +
                 ")" + MyKafkaUtil.getKafkaDDL("dwd_trade_order_pre_process", "order_detail_20211126"));
 
         Table filteredTable = tableEnv.sqlQuery(
@@ -79,9 +79,9 @@ public class DwdTradeOrderDetail {
 //                        "split_original_amount,\n" +
                         "split_activity_amount,\n" +
                         "split_coupon_amount,\n" +
-                        "split_total_amount \n" +
+                        "split_total_amount, \n" +
 //                        "od_ts ts,\n" +
-//                        "row_op_ts\n" +
+                        "row_op_ts \n" +
                         "from dwd_order_pre " +
                         "where `type`='insert'"
         );
@@ -109,9 +109,9 @@ public class DwdTradeOrderDetail {
 //                "split_original_amount string,\n" +
                 "split_activity_amount string,\n" +
                 "split_coupon_amount string,\n" +
-                "split_total_amount string \n" +
+                "split_total_amount string,\n" +
 //                "ts string,\n" +
-//                "row_op_ts timestamp_ltz(3)\n" +
+                "row_op_ts timestamp_ltz(3)\n" +
                 ")" + MyKafkaUtil.getKafkaSinkDDL("dwd_trade_order_detail"));
         tableEnv.executeSql("insert into dwd_trade_order_detail select * from filtered_table");
 //        env.execute("DwdTradeOrderDetail");
