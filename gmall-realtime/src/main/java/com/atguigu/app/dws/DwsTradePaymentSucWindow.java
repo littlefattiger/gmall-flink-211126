@@ -166,7 +166,7 @@ public class DwsTradePaymentSucWindow {
         resultDS.addSink(MyClickHouseUtil.getSinkFunction(
                 "insert into dws_trade_payment_suc_window values(?,?,?,?,?)"
         ));
-
+//Todo: looks not fully correct
 
         env.execute();
 

@@ -3,6 +3,7 @@ package com.atguigu.app.func;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.fastjson.JSONObject;
+import com.atguigu.utils.DimUtil;
 import com.atguigu.utils.DruidDSUtil;
 
 import com.atguigu.utils.PhoenixUtil;
@@ -16,8 +17,16 @@ public class DimSinkFunction extends RichSinkFunction<JSONObject> {
     public void invoke(JSONObject value, Context context) throws Exception {
         DruidPooledConnection connection = duridDataSource.getConnection();
 
+        String type = value.getString("type");
+
         String sinkTable = value.getString("sinkTable");
         JSONObject data = value.getJSONObject("data");
+
+
+
+        if ("update".equals(type)){
+            DimUtil.delDimInfo(sinkTable.toUpperCase(), data.getString("id"));
+        }
         PhoenixUtil.upsertValues(connection, sinkTable, data);
         connection.close();
     }
